@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ระบบประเมินเงินกู้ อทบ. v2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles/main.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Army Welfare Loan Calculator</p>
+          <h1>ระบบประเมินเงินกู้ อทบ. v2</h1>
+          <p class="hero-copy">
+            เวอร์ชันปรับตามงานจริง: ผูกระดับเงินเดือนตามยศ, ล็อกดอกเบี้ย 4.75%, คิดค่างวดอัตโนมัติแบบไม่มีทศนิยม,
+            ใช้เฉพาะข้อมูลสำคัญที่จำเป็น และสร้างผู้ค้ำตามยอดเกินเงินฝากอัตโนมัติ
+          </p>
+        </div>
+        <div class="hero-actions">
+          <button id="loadDemoBtn" class="btn btn-secondary" type="button">โหลดข้อมูลตัวอย่าง</button>
+          <button id="printBtn" class="btn btn-ghost" type="button">พิมพ์ / PDF</button>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="panel panel-form">
+          <form id="loanForm" novalidate>
+            <div class="section-heading">
+              <h2>ข้อมูลผู้กู้</h2>
+              <p>เลือกยศแล้วระบบจะจำกัดระดับเงินเดือนให้ตรงตามเงื่อนไขที่กำหนด</p>
+            </div>
+
+            <div class="grid borrower-grid-top">
+              <label class="field rank-field">
+                <span>ยศ</span>
+                <select id="rank" name="rank"></select>
+              </label>
+              <label class="field">
+                <span>ชื่อ-สกุล</span>
+                <input id="borrowerName" name="borrowerName" type="text" placeholder="เช่น ร.ต.สมชาย ใจดี" />
+              </label>
+              <label class="field">
+                <span>สังกัด</span>
+                <input id="unit" name="unit" type="text" placeholder="เช่น 4301 / ฝกพ.ฯ" />
+              </label>
+            </div>
+
+            <div class="grid grid-3">
+              <label class="field">
+                <span>ระดับ</span>
+                <select id="salaryLevel" name="salaryLevel"></select>
+              </label>
+              <label class="field">
+                <span>ชั้นเงินเดือน</span>
+                <select id="salaryStep" name="salaryStep"></select>
+              </label>
+              <label class="field">
+                <span>เงินเดือน</span>
+                <input id="salaryAmount" name="salaryAmount" type="text" readonly />
+              </label>
+            </div>
+
+            <div class="grid grid-2-simple">
+              <label class="field">
+                <span>รวมรับ</span>
+                <input id="totalIncome" name="totalIncome" type="number" min="0" step="1" value="0" />
+              </label>
+              <label class="field">
+                <span>รวมหัก</span>
+                <input id="totalDeductions" name="totalDeductions" type="number" min="0" step="1" value="0" />
+              </label>
+            </div>
+
+            <div class="grid grid-3 highlights-row">
+              <article class="stat-card">
+                <span>รวมรับ</span>
+                <strong id="totalIncomePreview">0 บาท</strong>
+              </article>
+              <article class="stat-card">
+                <span>1 ใน 3 ของรายรับ</span>
+                <strong id="oneThirdPreview">0 บาท</strong>
+              </article>
+              <article class="stat-card accent">
+                <span>วงเงินแนะนำสูงสุด</span>
+                <strong id="recommendedMaxPreview">0 บาท</strong>
+              </article>
+            </div>
+
+            <div class="section-heading">
+              <h2>ข้อมูลการกู้</h2>
+              <p>ดอกเบี้ยคงที่ 4.75% ต่อปี คำนวณค่างวดอัตโนมัติและปัดเป็นจำนวนเต็ม</p>
+            </div>
+
+            <div class="grid grid-3">
+              <label class="field">
+                <span>รูปแบบการกู้</span>
+                <select id="loanMode" name="loanMode"></select>
+              </label>
+              <label class="field">
+                <span>เหตุผลการกู้</span>
+                <select id="loanReason" name="loanReason"></select>
+              </label>
+              <label class="field checkbox-field inline-end">
+                <span>เป็นกรณีกู้ทับ อทบ. เดิม</span>
+                <input id="isRefinance" name="isRefinance" type="checkbox" />
+              </label>
+            </div>
+
+            <div class="grid grid-4">
+              <label class="field">
+                <span>ยอดเงินฝาก</span>
+                <input id="depositAmount" name="depositAmount" type="number" min="0" step="1" value="0" />
+              </label>
+              <label class="field">
+                <span>ยอดเกินเงินฝาก</span>
+                <input id="overDepositAmount" name="overDepositAmount" type="number" min="0" step="1" value="0" />
+              </label>
+              <label class="field">
+                <span>ยอดหนี้ อทบ. เดิม / เดือน</span>
+                <input id="existingAtbInstallment" name="existingAtbInstallment" type="number" min="0" step="1" value="0" />
+              </label>
+              <label class="field">
+                <span>วงเงินกู้รวม</span>
+                <input id="requestedAmount" name="requestedAmount" type="text" readonly />
+              </label>
+            </div>
+
+            <div class="grid grid-3">
+              <label class="field">
+                <span>ดอกเบี้ยต่อปี</span>
+                <input type="text" value="4.75%" readonly />
+              </label>
+              <label class="field">
+                <span>จำนวนงวด</span>
+                <select id="termMonths" name="termMonths"></select>
+              </label>
+              <label class="field">
+                <span>ค่างวดต่อเดือน</span>
+                <input id="monthlyInstallment" name="monthlyInstallment" type="text" readonly />
+              </label>
+            </div>
+
+            <div class="grid grid-1">
+              <label class="field">
+                <span>หมายเหตุเจ้าหน้าที่</span>
+                <input id="caseNote" name="caseNote" type="text" placeholder="บันทึกเพิ่มเติม" />
+              </label>
+            </div>
+
+            <div class="section-heading compact">
+              <h2>ผู้ค้ำประกัน</h2>
+              <p>ระบบจะแสดงจำนวนช่องอัตโนมัติตามรูปแบบการกู้และยอดเกินเงินฝาก</p>
+            </div>
+            <div class="helper-banner" id="guarantorBanner"></div>
+            <div id="guarantorContainer" class="guarantor-list"></div>
+
+            <div class="form-actions">
+              <button class="btn btn-primary" type="submit">คำนวณและประเมินผล</button>
+              <button id="resetBtn" class="btn btn-secondary" type="button">รีเซ็ตทั้งหมด</button>
+              <button id="exportJsonBtn" class="btn btn-ghost" type="button">สำรองข้อมูล JSON</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel panel-results">
+          <div class="section-heading">
+            <h2>ข้อมูลการกู้ดีหรือไม่</h2>
+            <p>สรุปผลผ่านหรือไม่ผ่าน พร้อมเหตุผลและทางเลือกตามจำนวนงวด</p>
+          </div>
+
+          <div class="result-summary" id="resultSummary">
+            <div class="badge pending">ยังไม่ได้ประเมิน</div>
+            <h3>รอการคำนวณ</h3>
+            <p>กรอกข้อมูลให้ครบ แล้วกด “คำนวณและประเมินผล”</p>
+          </div>
+
+          <div class="metrics-grid metrics-below">
+            <article class="metric-card emphasis-card">
+              <span>เหลือรับหลังกู้</span>
+              <strong id="postLoanBalanceValue">0 บาท</strong>
+            </article>
+            <article class="metric-card">
+              <span>ค่างวดที่ใช้คำนวณ</span>
+              <strong id="effectiveInstallmentValue">0 บาท</strong>
+            </article>
+            <article class="metric-card">
+              <span>จำนวนผู้ค้ำที่ต้องใช้</span>
+              <strong id="requiredGuarantorValue">0 คน</strong>
+            </article>
+            <article class="metric-card">
+              <span>คะแนนภาพรวม</span>
+              <strong id="scoreValue">0 / 100</strong>
+            </article>
+          </div>
+
+          <section class="rules-panel">
+            <h3>ตรวจเกณฑ์รายข้อ</h3>
+            <div id="ruleChecklist" class="rule-checklist"></div>
+          </section>
+
+          <section class="advice-panel">
+            <h3>ข้อสังเกต / คำแนะนำ</h3>
+            <ul id="adviceList"></ul>
+          </section>
+
+          <section class="scenario-panel">
+            <div class="panel-head">
+              <div>
+                <h3>ตารางจำลองหลายจำนวนงวด</h3>
+                <p>ใช้ดูว่าหากปรับจำนวนงวดแล้วผลจะดีขึ้นหรือไม่</p>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="scenario-table">
+                <thead>
+                  <tr>
+                    <th>จำนวนงวด</th>
+                    <th>ค่างวด/เดือน</th>
+                    <th>เหลือรับหลังกู้</th>
+                    <th>ผลประเมิน</th>
+                  </tr>
+                </thead>
+                <tbody id="scenarioTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="history-panel">
+            <div class="panel-head">
+              <div>
+                <h3>ประวัติการคำนวณล่าสุด</h3>
+                <p>เก็บในเครื่องเบราว์เซอร์เครื่องนี้เท่านั้น</p>
+              </div>
+              <button id="clearHistoryBtn" class="btn btn-small btn-ghost" type="button">ล้างประวัติ</button>
+            </div>
+            <div id="historyList"></div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>
