@@ -637,4 +637,213 @@ button, input, select { font: inherit; }
   body {
     zoom: 0.82;
   }
+/* ---------- compact guarantor ---------- */
+.compact-guarantor-card {
+  padding: 14px 16px;
+}
+
+.compact-guarantor-grid {
+  align-items: end;
+}
+
+.compact-guarantor-card .field > span {
+  margin-bottom: 6px;
+}
+
+.compact-checkbox {
+  min-height: auto;
+  padding: 10px 12px;
+}
+
+.compact-checkbox span {
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.compact-checkbox input[type='checkbox'] {
+  margin-left: 8px;
+  flex: 0 0 auto;
+}
+
+/* ---------- print A4 ---------- */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  html,
+  body {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    color: #000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    font-size: 11pt !important;
+  }
+
+  .app-shell,
+  main,
+  .layout {
+    width: 100% !important;
+    max-width: 186mm !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+  }
+
+  .hero-actions,
+  .form-actions,
+  .history-panel,
+  #printBtn,
+  #resetBtn,
+  .helper-banner,
+  .panel-head p,
+  #scoreValue,
+  .metric-card:has(#scoreValue),
+  #caseNote,
+  label:has(#caseNote) {
+    display: none !important;
+  }
+
+  .panel,
+  .hero,
+  .rules-panel,
+  .advice-panel,
+  .scenario-panel,
+  .result-summary,
+  .guarantor-card {
+    box-shadow: none !important;
+    border: 1px solid #d6dce5 !important;
+    background: #fff !important;
+    margin-bottom: 8px !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .hero,
+  .panel {
+    padding: 10px 12px !important;
+  }
+
+  .section-heading p,
+  .small-muted,
+  .helper-banner {
+    display: none !important;
+  }
+
+  .section-heading h2,
+  .panel-head h3,
+  .rules-panel h3,
+  .advice-panel h3,
+  .scenario-panel h3 {
+    font-size: 12pt !important;
+    margin: 0 0 6px 0 !important;
+  }
+
+  .grid,
+  .grid-4,
+  .grid-3,
+  .grid-2-simple,
+  .metrics-grid,
+  .guarantor-meta-3 {
+    gap: 6px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .grid-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+
+  .grid-3,
+  .guarantor-meta-3,
+  .metrics-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .field > span {
+    font-size: 9pt !important;
+    margin-bottom: 3px !important;
+  }
+
+  .field input,
+  .field select {
+    height: 30px !important;
+    min-height: 30px !important;
+    padding: 4px 8px !important;
+    font-size: 9.5pt !important;
+    border: 1px solid #bcc7d6 !important;
+    background: #fff !important;
+  }
+
+  .checkbox-field {
+    min-height: 30px !important;
+    padding: 4px 8px !important;
+  }
+
+  .compact-checkbox span {
+    font-size: 9pt !important;
+    white-space: nowrap !important;
+  }
+
+  .result-summary {
+    padding: 8px 10px !important;
+  }
+
+  /* เอาส่วนข้อความสรุปยาวออกจากงานพิมพ์ */
+  .result-summary h3,
+  .result-summary p {
+    display: none !important;
+  }
+
+  .badge {
+    margin: 0 !important;
+    padding: 3px 8px !important;
+    font-size: 9pt !important;
+  }
+
+  .metrics-below {
+    margin-top: 6px !important;
+  }
+
+  /* ซ่อนคะแนนภาพรวม */
+  .metrics-below .metric-card:last-child {
+    display: none !important;
+  }
+
+  .metric-card,
+  .stat-card {
+    padding: 6px 8px !important;
+  }
+
+  .metric-card span,
+  .stat-card span {
+    font-size: 8.5pt !important;
+  }
+
+  .metric-card strong,
+  .stat-card strong {
+    font-size: 10pt !important;
+  }
+
+  /* ตารางงวด: ให้เหลือเฉพาะงวดที่เลือก */
+  .scenario-table tbody tr:not(.highlight-row) {
+    display: none !important;
+  }
+
+  .scenario-table th,
+  .scenario-table td {
+    padding: 4px 6px !important;
+    font-size: 8.8pt !important;
+  }
+
+  /* บีบทั้งหน้าให้อยู่หน้าเดียว */
+  body {
+    zoom: 0.90;
+  }
 }
