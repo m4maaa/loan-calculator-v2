@@ -31,6 +31,7 @@ const elements = {
   resetBtn: document.querySelector('#resetBtn'),
   loadDemoBtn: document.querySelector('#loadDemoBtn'),
   printBtn: document.querySelector('#printBtn'),
+  savePdfBtn: document.querySelector('#savePdfBtn'),
   resultSummary: document.querySelector('#resultSummary'),
   postLoanBalanceValue: document.querySelector('#postLoanBalanceValue'),
   effectiveInstallmentValue: document.querySelector('#effectiveInstallmentValue'),
@@ -45,6 +46,50 @@ const elements = {
 
 let guarantorState = [];
 let currentEvaluation = null;
+
+function exportPdf() {
+  const target = document.querySelector('.app-shell');
+  if (!target || typeof window.html2pdf === 'undefined') {
+    window.alert('ไม่สามารถสร้าง PDF ได้ในขณะนี้');
+    return;
+  }
+
+  const previousScrollX = window.scrollX;
+  const previousScrollY = window.scrollY;
+  document.body.classList.add('pdf-export-mode');
+
+  const opt = {
+    margin: [5, 5, 5, 5],
+    filename: `loan-calculator-a4-${Date.now()}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      scrollX: 0,
+      scrollY: 0,
+      backgroundColor: '#ffffff',
+      windowWidth: document.documentElement.scrollWidth,
+      windowHeight: document.documentElement.scrollHeight,
+    },
+    jsPDF: {
+      unit: 'mm',
+      format: 'a4',
+      orientation: 'portrait',
+    },
+    pagebreak: {
+      mode: ['avoid-all', 'css', 'legacy'],
+    },
+  };
+
+  window.html2pdf()
+    .set(opt)
+    .from(target)
+    .save()
+    .finally(() => {
+      document.body.classList.remove('pdf-export-mode');
+      window.scrollTo(previousScrollX, previousScrollY);
+    });
+}
 
 function formatMoneyInputValue(rawValue) {
   const value = toNumber(rawValue);
@@ -338,6 +383,7 @@ function bindEvents() {
   elements.resetBtn.addEventListener('click', resetAll);
   elements.loadDemoBtn.addEventListener('click', loadDemo);
   elements.printBtn.addEventListener('click', () => window.print());
+  elements.savePdfBtn?.addEventListener('click', exportPdf);
   elements.clearHistoryBtn.addEventListener('click', () => {
     localStorage.removeItem(APP_CONFIG.historyStorageKey);
     loadHistory();
