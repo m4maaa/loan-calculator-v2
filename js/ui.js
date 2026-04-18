@@ -2,10 +2,12 @@ import { APP_CONFIG } from '../data/config.js';
 import { SALARY_LEVEL_OPTIONS, getSalaryStepsByLevel } from '../data/salary.js';
 import { currency, escapeHtml, formatCurrencyText, nowThai } from './utils.js';
 
-export function populateStaticOptions(elements) {
-  elements.rank.innerHTML = APP_CONFIG.rankOptions
-    .map((item) => `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`)
-    .join('');
+elements.termMonths.innerHTML = APP_CONFIG.terms
+  .map((term) => {
+    const years = term / 12;
+    return `<option value="${term}">${term} งวด / ${years} ปี</option>`;
+  })
+  .join('');
 
   elements.loanMode.innerHTML = APP_CONFIG.loanModes
     .map((item) => `<option value="${item.value}">${item.label}</option>`)
@@ -46,10 +48,103 @@ export function renderSalaryStepOptions(select, levelCode, preferredValue = '') 
 
 export function renderGuarantorFields(container, banner, count, description, existing = []) {
   banner.textContent = description;
+
   if (count === 0) {
     container.innerHTML = '<div class="small-muted">กรณีนี้ไม่ต้องใช้ผู้ค้ำประกัน</div>';
     return;
   }
+
+  container.innerHTML = Array.from({ length: count }, (_, index) => {
+    const current = existing[index] ?? {};
+
+    return `
+      <section class="guarantor-card compact-guarantor-card">
+        <div class="guarantor-meta guarantor-meta-3 compact-guarantor-grid">
+          <label class="field">
+            <span>ชื่อผู้ค้ำ ที่ ${index + 1}</span>
+            <input
+              data-guarantor-index="${index}"
+              data-field="name"
+              type="text"
+              value="${escapeHtml(current.name ?? '')}"
+              placeholder="ชื่อ-สกุลผู้ค้ำ"
+            />
+          </label>
+
+          <label class="field">
+            <span>สังกัด</span>
+            <input
+              data-guarantor-index="${index}"
+              data-field="unit"
+              type="text"
+              value="${escapeHtml(current.unit ?? '')}"
+              placeholder="สังกัด"
+            />
+          </label>
+
+          <label class="field checkbox-field guarantor-checkbox compact-checkbox">
+            <span>รายได้ผู้ค้ำผ่านเกณฑ์ 1 ใน 3</span>
+            <input
+              data-guarantor-index="${index}"
+              data-field="incomePass"
+              type="checkbox"
+              ${current.incomePass ? 'checked' : ''}
+            />
+          </label>
+        </div>
+      </section>
+    `;
+  }).join('');
+}export function renderGuarantorFields(container, banner, count, description, existing = []) {
+  banner.textContent = description;
+
+  if (count === 0) {
+    container.innerHTML = '<div class="small-muted">กรณีนี้ไม่ต้องใช้ผู้ค้ำประกัน</div>';
+    return;
+  }
+
+  container.innerHTML = Array.from({ length: count }, (_, index) => {
+    const current = existing[index] ?? {};
+
+    return `
+      <section class="guarantor-card compact-guarantor-card">
+        <div class="guarantor-meta guarantor-meta-3 compact-guarantor-grid">
+          <label class="field">
+            <span>ชื่อผู้ค้ำ ที่ ${index + 1}</span>
+            <input
+              data-guarantor-index="${index}"
+              data-field="name"
+              type="text"
+              value="${escapeHtml(current.name ?? '')}"
+              placeholder="ชื่อ-สกุลผู้ค้ำ"
+            />
+          </label>
+
+          <label class="field">
+            <span>สังกัด</span>
+            <input
+              data-guarantor-index="${index}"
+              data-field="unit"
+              type="text"
+              value="${escapeHtml(current.unit ?? '')}"
+              placeholder="สังกัด"
+            />
+          </label>
+
+          <label class="field checkbox-field guarantor-checkbox compact-checkbox">
+            <span>รายได้ผู้ค้ำผ่านเกณฑ์ 1 ใน 3</span>
+            <input
+              data-guarantor-index="${index}"
+              data-field="incomePass"
+              type="checkbox"
+              ${current.incomePass ? 'checked' : ''}
+            />
+          </label>
+        </div>
+      </section>
+    `;
+  }).join('');
+}
 
   container.innerHTML = Array.from({ length: count }, (_, index) => {
     const current = existing[index] ?? {};
@@ -116,13 +211,15 @@ export function renderResult(elements, evaluation) {
 
 
 export function renderScenarioTable(tbody, rows, selectedTerm) {
-  tbody.innerHTML = rows
+  const selectedRows = rows.filter((row) => Number(row.term) === Number(selectedTerm));
+
+  tbody.innerHTML = selectedRows
     .map((row) => `
-      <tr class="${row.term === selectedTerm ? 'highlight-row' : ''}">
-        <td>${row.term}</td>
+      <tr class="highlight-row">
+        <td>${row.term} งวด / ${row.term / 12} ปี</td>
         <td>${formatCurrencyText(row.installment)}</td>
         <td>${formatCurrencyText(row.postLoanBalance)}</td>
-        <td>${row.decision === 'pass' ? 'ผ่าน' : row.decision === 'warn' ? 'ควรปรับ' : 'ไม่ผ่าน'}</td>
+        <td>${row.decisionText}</td>
       </tr>
     `)
     .join('');
