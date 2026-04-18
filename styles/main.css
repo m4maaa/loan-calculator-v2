@@ -669,46 +669,33 @@ button, input, select { font: inherit; }
 @media print {
   @page {
     size: A4 portrait;
-    margin: 12mm;
+    margin: 6mm;
   }
 
-  html,
-  body {
+  html, body {
     width: 210mm;
     min-height: 297mm;
     margin: 0 !important;
     padding: 0 !important;
     background: #fff !important;
     color: #000 !important;
+    font-size: 11pt !important;
+    line-height: 1.2 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
   body {
-    font-size: 11pt !important;
+    zoom: 0.96;
   }
 
   .app-shell,
   main,
   .layout {
     width: 100% !important;
-    max-width: 186mm !important;
+    max-width: 198mm !important;
     margin: 0 auto !important;
     padding: 0 !important;
-  }
-
-  .hero-actions,
-  .form-actions,
-  .history-panel,
-  #printBtn,
-  #resetBtn,
-  .helper-banner,
-  .panel-head p,
-  #scoreValue,
-  .metric-card:has(#scoreValue),
-  #caseNote,
-  label:has(#caseNote) {
-    display: none !important;
   }
 
   .panel,
@@ -718,23 +705,9 @@ button, input, select { font: inherit; }
   .scenario-panel,
   .result-summary,
   .guarantor-card {
-    box-shadow: none !important;
-    border: 1px solid #d6dce5 !important;
-    background: #fff !important;
-    margin-bottom: 8px !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-  }
-
-  .hero,
-  .panel {
-    padding: 10px 12px !important;
-  }
-
-  .section-heading p,
-  .small-muted,
-  .helper-banner {
-    display: none !important;
+    padding: 7px 9px !important;
+    margin-bottom: 6px !important;
+    border-radius: 5px !important;
   }
 
   .section-heading h2,
@@ -742,8 +715,9 @@ button, input, select { font: inherit; }
   .rules-panel h3,
   .advice-panel h3,
   .scenario-panel h3 {
-    font-size: 12pt !important;
-    margin: 0 0 6px 0 !important;
+    font-size: 11pt !important;
+    margin: 0 0 4px 0 !important;
+    line-height: 1.1 !important;
   }
 
   .grid,
@@ -751,100 +725,102 @@ button, input, select { font: inherit; }
   .grid-3,
   .grid-2-simple,
   .metrics-grid,
+  .borrower-grid-top,
   .guarantor-meta-3 {
-    gap: 6px !important;
-    margin-bottom: 6px !important;
-  }
-
-  .grid-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  }
-
-  .grid-3,
-  .guarantor-meta-3,
-  .metrics-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 5px !important;
+    margin-bottom: 5px !important;
   }
 
   .field > span {
-    font-size: 9pt !important;
-    margin-bottom: 3px !important;
+    font-size: 8.8pt !important;
+    margin-bottom: 2px !important;
+    line-height: 1.1 !important;
   }
 
   .field input,
   .field select {
-    height: 30px !important;
-    min-height: 30px !important;
-    padding: 4px 8px !important;
-    font-size: 9.5pt !important;
-    border: 1px solid #bcc7d6 !important;
-    background: #fff !important;
+    height: 26px !important;
+    min-height: 26px !important;
+    padding: 3px 7px !important;
+    font-size: 8.8pt !important;
+    border-radius: 4px !important;
   }
 
   .checkbox-field {
-    min-height: 30px !important;
-    padding: 4px 8px !important;
+    min-height: 26px !important;
+    height: 26px !important;
+    padding: 3px 7px !important;
+    gap: 5px !important;
   }
 
-  .compact-checkbox span {
-    font-size: 9pt !important;
+  .checkbox-field span {
+    font-size: 8.2pt !important;
+    line-height: 1.05 !important;
     white-space: nowrap !important;
   }
 
-  .result-summary {
-    padding: 8px 10px !important;
+  .checkbox-field input[type='checkbox'] {
+    width: 12px !important;
+    height: 12px !important;
   }
 
-  /* เอาส่วนข้อความสรุปยาวออกจากงานพิมพ์ */
-  .result-summary h3,
-  .result-summary p {
-    display: none !important;
+  .guarantor-card {
+    padding: 6px 8px !important;
+    margin-bottom: 5px !important;
   }
 
-  .badge {
-    margin: 0 !important;
-    padding: 3px 8px !important;
-    font-size: 9pt !important;
+  .guarantor-card .field > span {
+    font-size: 8.2pt !important;
   }
 
-  .metrics-below {
-    margin-top: 6px !important;
-  }
-
-  /* ซ่อนคะแนนภาพรวม */
-  .metrics-below .metric-card:last-child {
-    display: none !important;
+  .guarantor-card .field input,
+  .guarantor-card .field select {
+    height: 24px !important;
+    min-height: 24px !important;
+    font-size: 8.2pt !important;
   }
 
   .metric-card,
   .stat-card {
-    padding: 6px 8px !important;
+    padding: 6px 7px !important;
   }
 
   .metric-card span,
   .stat-card span {
-    font-size: 8.5pt !important;
+    font-size: 8.2pt !important;
   }
 
   .metric-card strong,
   .stat-card strong {
-    font-size: 10pt !important;
+    font-size: 9.8pt !important;
   }
 
-  /* ตารางงวด: ให้เหลือเฉพาะงวดที่เลือก */
-  .scenario-table tbody tr:not(.highlight-row) {
-    display: none !important;
+  .rule-item {
+    padding: 5px 7px !important;
+    gap: 5px !important;
+  }
+
+  .rule-status {
+    width: 15px !important;
+    height: 15px !important;
+    font-size: 7.5pt !important;
+  }
+
+  .rule-detail strong {
+    font-size: 8.1pt !important;
+    line-height: 1.1 !important;
+  }
+
+  .rule-detail span {
+    font-size: 7.6pt !important;
+    line-height: 1.1 !important;
   }
 
   .scenario-table th,
   .scenario-table td {
-    padding: 4px 6px !important;
-    font-size: 8.8pt !important;
-  }
-
-  /* บีบทั้งหน้าให้อยู่หน้าเดียว */
-  body {
-    zoom: 0.90;
+    padding: 5px 6px !important;
+    font-size: 8.3pt !important;
+    line-height: 1.1 !important;
   }
 }
 
@@ -1044,7 +1020,6 @@ button, input, select { font: inherit; }
     font-size: 8.8pt !important;
   }
 }
-
 
 /* ===== Print override for A4 single-page output ===== */
 @media print {
