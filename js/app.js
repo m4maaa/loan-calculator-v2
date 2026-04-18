@@ -1,8 +1,8 @@
 import { APP_CONFIG } from '../data/config.js';
 import { getSalaryByLevelAndStep, getSalaryStepsByLevel } from '../data/salary.js';
 import { buildScenarioTable, calculateCoreMetrics, evaluateLoan, getAllowedSalaryLevelsByRank, getRequiredGuarantorInfo } from './calculator.js';
-import { populateStaticOptions, renderGuarantorFields, renderHistory, renderPreview, renderResult, renderSalaryLevelOptions, renderSalaryStepOptions, renderScenarioTable, buildHistoryEntry } from './ui.js';
-import { downloadFile, formatCurrencyText, toNumber } from './utils.js';
+import { buildHistoryEntry, populateStaticOptions, renderGuarantorFields, renderHistory, renderPreview, renderResult, renderSalaryLevelOptions, renderSalaryStepOptions, renderScenarioTable } from './ui.js';
+import { currency, formatCurrencyText, toNumber } from './utils.js';
 
 const elements = {
   loanForm: document.querySelector('#loanForm'),
@@ -55,7 +55,8 @@ function bindMoneyInput(input) {
   if (!input) return;
 
   input.addEventListener('focus', () => {
-    input.value = toNumber(input.value) ? String(toNumber(input.value)) : '';
+    const value = toNumber(input.value);
+    input.value = value ? String(value) : '';
   });
 
   input.addEventListener('blur', () => {
@@ -176,6 +177,7 @@ function loadHistory() {
 function validateForm(formData) {
   const errors = [];
   const validSteps = getSalaryStepsByLevel(formData.salaryLevel);
+
   if (!formData.rank) errors.push('กรุณาเลือกยศ');
   if (!formData.salaryLevel || !formData.salaryStep || formData.salaryAmount <= 0 || !validSteps.includes(formData.salaryStep)) {
     errors.push('กรุณาเลือกข้อมูลระดับและชั้นเงินเดือนให้ถูกต้อง');
@@ -185,6 +187,7 @@ function validateForm(formData) {
   if (formData.depositAmount < 0 || formData.overDepositAmount < 0) errors.push('ยอดเงินฝากและยอดเกินเงินฝากต้องไม่ติดลบ');
   if (formData.loanMode === 'deposit_only' && formData.overDepositAmount > 0) errors.push('กู้เฉพาะเงินฝากไม่ควรมียอดเกินเงินฝาก');
   if (formData.loanMode === 'over_deposit' && formData.overDepositAmount <= 0) errors.push('เลือกกู้เกินเงินฝาก ต้องมียอดเกินเงินฝากมากกว่า 0');
+
   return errors;
 }
 
@@ -226,20 +229,16 @@ function resetAll() {
   setAutoSalary();
   updateRequestedAmountAndPreview();
   saveDraft();
-}
 
-function exportCurrentJson() {
-  if (!currentEvaluation) {
-    submitEvaluation();
-  }
-
-  if (!currentEvaluation) return;
-
-  downloadFile(
-    `loan-evaluation-${Date.now()}.json`,
-    JSON.stringify(currentEvaluation, null, 2),
-    'application/json;charset=utf-8',
-  );
+  [
+    elements.totalIncome,
+    elements.totalDeductions,
+    elements.depositAmount,
+    elements.overDepositAmount,
+    elements.existingAtbInstallment,
+  ].forEach((input) => {
+    input.value = formatMoneyInputValue(input.value);
+  });
 }
 
 function loadDemo() {
@@ -261,6 +260,16 @@ function loadDemo() {
   setAutoSalary();
   updateRequestedAmountAndPreview();
   saveDraft();
+
+  [
+    elements.totalIncome,
+    elements.totalDeductions,
+    elements.depositAmount,
+    elements.overDepositAmount,
+    elements.existingAtbInstallment,
+  ].forEach((input) => {
+    input.value = formatMoneyInputValue(input.value);
+  });
 }
 
 function bindEvents() {
@@ -296,7 +305,7 @@ function bindEvents() {
 
   elements.loanMode.addEventListener('change', () => {
     if (elements.loanMode.value === 'deposit_only') {
-      elements.overDepositAmount.value = 0;
+      elements.overDepositAmount.value = formatMoneyInputValue(0);
     }
     syncGuarantorFields();
     updateRequestedAmountAndPreview();
