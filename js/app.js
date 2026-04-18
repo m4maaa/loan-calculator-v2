@@ -26,11 +26,9 @@ const elements = {
   requestedAmount: document.querySelector('#requestedAmount'),
   termMonths: document.querySelector('#termMonths'),
   monthlyInstallment: document.querySelector('#monthlyInstallment'),
-  caseNote: document.querySelector('#caseNote'),
   guarantorBanner: document.querySelector('#guarantorBanner'),
   guarantorContainer: document.querySelector('#guarantorContainer'),
   resetBtn: document.querySelector('#resetBtn'),
-  exportJsonBtn: document.querySelector('#exportJsonBtn'),
   loadDemoBtn: document.querySelector('#loadDemoBtn'),
   printBtn: document.querySelector('#printBtn'),
   resultSummary: document.querySelector('#resultSummary'),
@@ -47,6 +45,33 @@ const elements = {
 
 let guarantorState = [];
 let currentEvaluation = null;
+
+function formatMoneyInputValue(rawValue) {
+  const value = toNumber(rawValue);
+  return currency(value, 1);
+}
+
+function bindMoneyInput(input) {
+  if (!input) return;
+
+  input.addEventListener('focus', () => {
+    input.value = toNumber(input.value) ? String(toNumber(input.value)) : '';
+  });
+
+  input.addEventListener('blur', () => {
+    input.value = formatMoneyInputValue(input.value);
+  });
+}
+
+function initMoneyInputs() {
+  [
+    elements.totalIncome,
+    elements.totalDeductions,
+    elements.depositAmount,
+    elements.overDepositAmount,
+    elements.existingAtbInstallment,
+  ].forEach(bindMoneyInput);
+}
 
 function getFormData() {
   return {
@@ -65,7 +90,6 @@ function getFormData() {
     overDepositAmount: toNumber(elements.overDepositAmount.value),
     existingAtbInstallment: toNumber(elements.existingAtbInstallment.value),
     termMonths: toNumber(elements.termMonths.value),
-    caseNote: elements.caseNote.value.trim(),
     guarantors: guarantorState,
   };
 }
@@ -131,7 +155,6 @@ function loadDraft() {
     elements.overDepositAmount.value = draft.overDepositAmount ?? 0;
     elements.existingAtbInstallment.value = draft.existingAtbInstallment ?? 0;
     elements.termMonths.value = draft.termMonths ?? elements.termMonths.value;
-    elements.caseNote.value = draft.caseNote ?? '';
     guarantorState = Array.isArray(draft.guarantors) ? draft.guarantors : [];
   } catch {
     localStorage.removeItem(APP_CONFIG.draftStorageKey);
@@ -233,7 +256,6 @@ function loadDemo() {
   elements.isRefinance.checked = false;
   elements.existingAtbInstallment.value = 0;
   elements.termMonths.value = '84';
-  elements.caseNote.value = 'ข้อมูลตัวอย่างสำหรับทดสอบ';
   guarantorState = [{ name: 'พ.ต.ทดสอบ ผู้ค้ำ', unit: 'หน่วยข้างเคียง', incomePass: true }];
   syncGuarantorFields();
   setAutoSalary();
@@ -288,7 +310,6 @@ function bindEvents() {
   });
   elements.borrowerName.addEventListener('input', saveDraft);
   elements.unit.addEventListener('input', saveDraft);
-  elements.caseNote.addEventListener('input', saveDraft);
 
   elements.guarantorContainer.addEventListener('input', (event) => {
     const target = event.target;
@@ -306,7 +327,6 @@ function bindEvents() {
   });
 
   elements.resetBtn.addEventListener('click', resetAll);
-  elements.exportJsonBtn.addEventListener('click', exportCurrentJson);
   elements.loadDemoBtn.addEventListener('click', loadDemo);
   elements.printBtn.addEventListener('click', () => window.print());
   elements.clearHistoryBtn.addEventListener('click', () => {
@@ -324,6 +344,17 @@ function init() {
   updateRequestedAmountAndPreview();
   loadHistory();
   bindEvents();
+  initMoneyInputs();
+
+  [
+    elements.totalIncome,
+    elements.totalDeductions,
+    elements.depositAmount,
+    elements.overDepositAmount,
+    elements.existingAtbInstallment,
+  ].forEach((input) => {
+    input.value = formatMoneyInputValue(input.value);
+  });
 }
 
 init();
