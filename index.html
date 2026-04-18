@@ -67,11 +67,11 @@
             <div class="grid grid-2-simple">
               <label class="field">
                 <span>รวมรับ</span>
-                <input id="totalIncome" name="totalIncome" type="number" min="0" step="1" value="0" />
+                <input id="totalIncome" name="totalIncome" type="text" inputmode="decimal" value="0" />
               </label>
               <label class="field">
                 <span>รวมหัก</span>
-                <input id="totalDeductions" name="totalDeductions" type="number" min="0" step="1" value="0" />
+                <input id="totalDeductions" name="totalDeductions" type="text" inputmode="decimal" value="0" />
               </label>
             </div>
 
@@ -113,15 +113,15 @@
             <div class="grid grid-4">
               <label class="field">
                 <span>ยอดเงินฝาก</span>
-                <input id="depositAmount" name="depositAmount" type="number" min="0" step="1" value="0" />
+                <input id="depositAmount" name="depositAmount" type="text" inputmode="decimal" value="0" />
               </label>
               <label class="field">
                 <span>ยอดเกินเงินฝาก</span>
-                <input id="overDepositAmount" name="overDepositAmount" type="number" min="0" step="1" value="0" />
+                <input id="overDepositAmount" name="overDepositAmount" type="text" inputmode="decimal" value="0" />
               </label>
               <label class="field">
                 <span>ยอดหนี้ อทบ. เดิม / เดือน</span>
-                <input id="existingAtbInstallment" name="existingAtbInstallment" type="number" min="0" step="1" value="0" />
+                <input id="existingAtbInstallment" name="existingAtbInstallment" type="text" inputmode="decimal" value="0" />
               </label>
               <label class="field">
                 <span>วงเงินกู้รวม</span>
@@ -144,13 +144,6 @@
               </label>
             </div>
 
-            <div class="grid grid-1">
-              <label class="field">
-                <span>หมายเหตุเจ้าหน้าที่</span>
-                <input id="caseNote" name="caseNote" type="text" placeholder="บันทึกเพิ่มเติม" />
-              </label>
-            </div>
-
             <div class="section-heading compact">
               <h2>ผู้ค้ำประกัน</h2>
               <p>ระบบจะแสดงจำนวนช่องอัตโนมัติตามรูปแบบการกู้และยอดเกินเงินฝาก</p>
@@ -161,7 +154,6 @@
             <div class="form-actions">
               <button class="btn btn-primary" type="submit">คำนวณและประเมินผล</button>
               <button id="resetBtn" class="btn btn-secondary" type="button">รีเซ็ตทั้งหมด</button>
-              <button id="exportJsonBtn" class="btn btn-ghost" type="button">สำรองข้อมูล JSON</button>
             </div>
           </form>
         </section>
